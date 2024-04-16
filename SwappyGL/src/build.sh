@@ -70,7 +70,8 @@ for i in "${AndroidArchitectures[@]}"
             CxxTarget="aarch64-linux-android"
         fi
 
-        CxxTarget="$ANDROID_NDK_HOME/toolchains/llvm/prebuilt/$Android_NDK_Host_Tag/bin/$CxxTarget$Android_Minimum_Api_Version-clang++"   
+        CxxTarget="$ANDROID_NDK_HOME/toolchains/llvm/prebuilt/$Android_NDK_Host_Tag/bin/$CxxTarget$Android_Minimum_Api_Version-clang++"
+        SwappyLibPath="../../libs/$ABI_Folder_Name"
 
         export CXX=$CxxTarget
 
@@ -79,10 +80,10 @@ for i in "${AndroidArchitectures[@]}"
         for i2 in $LibPath/*.cpp; do
             ShortName="${i2##*/}"
             OutputName="${ShortName/cpp/o}"
-            $CXX -c $i2 -std=c++0x -fPIC -o ${PWD}/sourceFiles/$OutputName
+            $CXX -c $i2 -std=c++17 -fPIC -o ${PWD}/sourceFiles/$OutputName
         done
 
-        $CXX -shared -static-libstdc++ -landroid -o ${PWD}/sourceFiles/lib${LibraryName}.so ${PWD}/sourceFiles/*.o
+        $CXX -shared -static-libstdc++ -L$SwappyLibPath -lswappy_static -landroid -Wl,-s -o ${PWD}/sourceFiles/lib${LibraryName}.so ${PWD}/sourceFiles/*.o
 
         echo "Copying lib${LibraryName}.so to libs/Android/$ABI_Folder_Name"
         {
