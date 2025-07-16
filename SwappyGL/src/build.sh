@@ -83,7 +83,7 @@ for i in "${AndroidArchitectures[@]}"
             $CXX -c $i2 -std=c++17 -fPIC -o ${PWD}/sourceFiles/$OutputName
         done
 
-        $CXX -shared -static-libstdc++ -L$SwappyLibPath -lswappy_static -landroid -Wl,-s -o ${PWD}/sourceFiles/lib${LibraryName}.so ${PWD}/sourceFiles/*.o
+        $CXX -shared -static-libstdc++ -L$SwappyLibPath -lswappy_static -landroid -Wl,-s,-z,max-page-size=16384 -o ${PWD}/sourceFiles/lib${LibraryName}.so ${PWD}/sourceFiles/*.o
 
         echo "Copying lib${LibraryName}.so to libs/Android/$ABI_Folder_Name"
         {
